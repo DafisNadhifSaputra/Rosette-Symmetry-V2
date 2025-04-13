@@ -1,54 +1,139 @@
 .colorPickerContainer {
     width: 100%;
-    min-height: 130px; /* Adjust if needed */
-    margin-top: 0.3rem;
+    margin: 0.5rem 0;
+    background-color: var(--glass-bg);
+    border-radius: var(--border-radius);
+    padding: 0.8rem;
+    display: flex;
+    justify-content: center;
+    box-shadow: var(--shadow-sm);
+    transition: all var(--transition-speed) ease;
+    min-height: 180px; /* Ensure minimum height for the container */
+    position: relative;
+}
+
+.colorPickerContainer:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+    background-color: var(--glass-bg-hover);
+}
+
+/* Decorative element */
+.colorPickerContainer::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, 
+        transparent, 
+        rgba(var(--primary-color-rgb), 0.7), 
+        transparent);
+    opacity: 0.5;
+    transition: opacity var(--transition-speed) ease;
+}
+
+.colorPickerContainer:hover::after {
+    opacity: 0.8;
+}
+
+/* Target the wrapper div created by iro.js */
+.iroColorPicker {
+    width: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 0.5rem 0; /* Add some vertical padding */
-}
-
-/* Target the wrapper div created by iro.js if needed, or the container */
-/* Use a specific class added by iro.js or target the container */
-.iroColorPicker {
-    /* Use the container ref div for direct styling */
-     max-width: 100%; /* Allow it to shrink */
+    min-height: 180px; /* Match container height */
+    position: relative;
+    z-index: 2; /* Ensure proper z-index */
 }
 
 /* Target internal iro.js elements using their classes */
-/* Note: iro.js class names might change in future versions */
 .iroColorPicker :global(.iro__colorPicker) {
-    /* Styles for the main picker element if needed */
-    /* Example: Add border via CSS vars if direct update fails */
-    /* border: 1px solid var(--iro-picker-border-color, var(--picker-border-color)); */
-    border: 1px solid var(--picker-border-color); /* Direct use */
+    border: 1px solid var(--glass-border);
     border-radius: calc(var(--border-radius) * 0.8);
-    transition: border-color var(--transition-speed);
+    padding: 5px;
+    transition: all var(--transition-speed) ease;
     box-shadow: var(--shadow-sm);
-    max-width: 100%; /* Ensure it doesn't overflow container */
-    margin: 0 auto; /* Center if container is wider */
+    background-color: var(--glass-bg);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    max-width: 100%;
+    margin: 0 auto;
 }
 
 .iroColorPicker :global(.iro__colorPicker .iro__box),
 .iroColorPicker :global(.iro__colorPicker .iro__slider) {
-    /* Add inset shadow to mimic border on box/slider */
     box-shadow: inset 0 0 0 1px var(--picker-border-color);
     border-radius: calc(var(--border-radius) * 0.6);
-    transition: box-shadow var(--transition-speed); /* Transition the shadow color */
+    transition: box-shadow var(--transition-speed) ease;
+    overflow: hidden;
+}
+
+/* Add subtle hover glow */
+.iroColorPicker :global(.iro__colorPicker):hover {
+    box-shadow: var(--shadow-md);
+}
+
+.iroColorPicker :global(.iro__handle) {
+    box-shadow: 0 0 0 1px rgba(0,0,0,0.2), 0 0 5px rgba(0,0,0,0.2), inset 0 0 0 1px rgba(255,255,255,0.2);
+    transition: transform var(--transition-speed-fast) ease,
+                box-shadow var(--transition-speed-fast) ease;
+}
+
+.iroColorPicker :global(.iro__handle:hover),
+.iroColorPicker :global(.iro__handle--isActive) {
+    transform: scale(1.2);
+    box-shadow: 0 0 0 1px rgba(0,0,0,0.3), 0 0 8px rgba(0,0,0,0.3), inset 0 0 0 1px rgba(255,255,255,0.3);
+}
+
+/* Custom handle styles to improve dragging experience */
+:global(.IroHandle) {
+    transform: scale(1.2); /* Make handles slightly bigger */
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+    cursor: grab !important; /* Better cursor for drag interaction */
+}
+
+:global(.IroHandle:active) {
+    cursor: grabbing !important;
+    transform: scale(1.3); /* Slightly larger when being dragged */
+}
+
+/* Add touch-action property for better mobile experience */
+:global(.IroColorPicker) {
+    touch-action: none !important;
+}
+
+/* Target the color box and slider specifically */
+:global(.IroBox), :global(.IroSlider) {
+    margin: 0 auto !important; /* Center elements */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 /* Error message styling */
 .colorPickerContainer .errorMessage {
-     color: var(--danger-color);
-     font-size: 0.9em;
-     text-align: center;
-     padding: 1em 0;
+    color: var(--danger-color);
+    font-size: 0.9em;
+    text-align: center;
+    padding: 1em 0;
+    background-color: rgba(var(--danger-color-rgb), 0.1);
+    border-radius: var(--border-radius);
+    border: 1px solid rgba(var(--danger-color-rgb), 0.2);
+    margin: 0.5rem;
 }
 
+/* Dark mode specific overrides */
+body.dark-mode .iroColorPicker :global(.iro__colorPicker) {
+    background-color: var(--glass-bg);
+    border-color: var(--glass-border);
+}
 
-/* Dark mode specific overrides if needed */
-/* (Already handled by CSS variables, but could add more specific styles) */
-/* body.dark-mode .iroColorPicker :global(.iro__colorPicker .iro__box),
+body.dark-mode .iroColorPicker :global(.iro__colorPicker .iro__box),
 body.dark-mode .iroColorPicker :global(.iro__colorPicker .iro__slider) {
     box-shadow: inset 0 0 0 1px var(--picker-border-color);
-} */
+}
+
+body.dark-mode .iroColorPicker :global(.iro__handle) {
+    box-shadow: 0 0 0 1px rgba(0,0,0,0.4), 0 0 5px rgba(0,0,0,0.3), inset 0 0 0 1px rgba(255,255,255,0.2);
+}

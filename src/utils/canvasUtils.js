@@ -24,40 +24,57 @@ export function applyContextSettings(ctx, currentSettings, actionSettings = null
     ctx.fillStyle = settingsToUse.color; // For filled shapes
 }
 
-// Draws a single primitive shape (line, rect, oval)
-function drawPrimitive(ctx, x1, y1, x2, y2, tool) {
-    ctx.beginPath();
+// Draws a single primitive shape (line, rect, oval) - exported for use elsewhere
+export function drawPrimitive(ctx, x1, y1, x2, y2, tool, angle = 0) {
+    ctx.save();
     const w = x2 - x1;
     const h = y2 - y1;
 
     switch (tool) {
         case 'line':
+            ctx.beginPath();
             ctx.moveTo(x1, y1);
             ctx.lineTo(x2, y2);
             ctx.stroke();
             break;
         case 'rectangle':
-        case 'filledRect':
+        case 'filledRect': {
             if (Math.abs(w) > 0.1 || Math.abs(h) > 0.1) {
-                ctx.rect(x1, y1, w, h);
+                // For rectangles, we'll use transformation to maintain orientation during rotation
+                const centerX = x1 + w / 2;
+                const centerY = y1 + h / 2;
+                
+                ctx.translate(centerX, centerY);
+                ctx.rotate(angle);
+                
+                ctx.beginPath();
+                ctx.rect(-Math.abs(w) / 2, -Math.abs(h) / 2, Math.abs(w), Math.abs(h));
                 if (tool === 'filledRect') ctx.fill();
                 else ctx.stroke();
             }
             break;
+        }
         case 'oval':
         case 'filledOval': {
             const rX = Math.abs(w / 2);
             const rY = Math.abs(h / 2);
             if (rX > 0.1 || rY > 0.1) {
-                const cX = x1 + w / 2;
-                const cY = y1 + h / 2;
-                ctx.ellipse(cX, cY, rX, rY, 0, 0, 2 * Math.PI);
+                // For ovals, we'll use transformation to maintain orientation during rotation
+                const centerX = x1 + w / 2;
+                const centerY = y1 + h / 2;
+                
+                ctx.translate(centerX, centerY);
+                ctx.rotate(angle);
+                
+                ctx.beginPath();
+                ctx.ellipse(0, 0, rX, rY, 0, 0, 2 * Math.PI);
                 if (tool === 'filledOval') ctx.fill();
                 else ctx.stroke();
             }
             break;
         }
     }
+    ctx.restore();
 }
 
 // Draws a small dot
@@ -100,8 +117,8 @@ function transformPoint(x, y, angle, doReflect, centerX, centerY) {
     return { x: rX + centerX, y: rY + centerY };
 }
 
-// Apply symmetry transformations to start/end points for primitives
-function applySymmetryToPrimitive(action, settings, center) {
+// Apply symmetry transformations to start/end points for primitives - exported for use elsewhere
+export function applySymmetryToPrimitive(action, settings, center) {
     const points = [];
     const { startX: x1, startY: y1, endX: x2, endY: y2 } = action;
     const N = settings.rotationOrder;
@@ -174,25 +191,101 @@ function applySymmetryToPath(path, settings, center) {
 export function drawActionWithSymmetry(ctx, action, settings, center) {
     if (!ctx || !action || !action.tool) return;
 
+    // Special case for freehand drawing - keep using path-based approach
     if (action.tool === 'freehand') {
         if (action.path && action.path.length > 0) {
             const transformedPaths = applySymmetryToPath(action.path, settings, center);
             transformedPaths.forEach(p => drawFreehandPath(ctx, p));
         }
-    } else {
-        const transformedPoints = applySymmetryToPrimitive(action, settings, center);
-        const isClickLike = Math.hypot(action.startX - action.endX, action.startY - action.endY) < 1.0;
+        return;
+    }
 
-        transformedPoints.forEach(p => {
+    // For primitive shapes (line, rectangle, oval), we'll use canvas transformations
+    // for more accurate rotational symmetry
+    const N = settings.rotationOrder;
+    const reflect = settings.reflectionEnabled;
+    const angleInc = (N > 0) ? (2 * Math.PI) / N : 0;
+    const centerX = center.x;
+    const centerY = center.y;
+    const isClickLike = Math.hypot(action.startX - action.endX, action.startY - action.endY) < 1.0;
+
+    // Draw the shape N times with rotation
+    for (let i = 0; i < N; i++) {
+        const angle = i * angleInc;
+
+        // Instance 1: Original shape with rotation
+        if ((action.tool === 'filledRect' || action.tool === 'filledOval') && isClickLike) {
+            // For click-like actions on filled shapes, just draw dots
+            const rotatedPt = transformPoint(action.startX, action.startY, angle, false, centerX, centerY);
+            drawDot(ctx, rotatedPt.x, rotatedPt.y);
+        } else {
+            // For regular shapes, use canvas transformation for rotation
+            ctx.save();
+            ctx.translate(centerX, centerY);
+            ctx.rotate(angle);
+            ctx.translate(-centerX, -centerY);
+            drawShapeDirectly(ctx, action);
+            ctx.restore();
+        }
+
+        // Instance 2: Reflected shape with rotation (if reflection is enabled)
+        if (reflect) {
             if ((action.tool === 'filledRect' || action.tool === 'filledOval') && isClickLike) {
-                drawDot(ctx, p.x1, p.y1); // Draw dot at start point for filled shape click
+                // For click-like actions on filled shapes, just draw dots for reflection
+                const reflectedRotatedPt = transformPoint(action.startX, action.startY, angle, true, centerX, centerY);
+                drawDot(ctx, reflectedRotatedPt.x, reflectedRotatedPt.y);
             } else {
-                drawPrimitive(ctx, p.x1, p.y1, p.x2, p.y2, action.tool);
+                // For regular shapes, use canvas transformation for reflection + rotation
+                ctx.save();
+                ctx.translate(centerX, centerY);
+                ctx.scale(-1, 1); // Reflect across Y-axis
+                ctx.rotate(angle);
+                ctx.translate(-centerX, -centerY);
+                drawShapeDirectly(ctx, action);
+                ctx.restore();
             }
-        });
+        }
     }
 }
 
+// Helper function to draw a shape directly without symmetry
+function drawShapeDirectly(ctx, action) {
+    const { startX: x1, startY: y1, endX: x2, endY: y2, tool } = action;
+    const w = x2 - x1;
+    const h = y2 - y1;
+    
+    ctx.beginPath();
+    
+    switch (tool) {
+        case 'line':
+            ctx.moveTo(x1, y1);
+            ctx.lineTo(x2, y2);
+            ctx.stroke();
+            break;
+            
+        case 'rectangle':
+        case 'filledRect': {
+            ctx.rect(x1, y1, w, h);
+            if (tool === 'filledRect') ctx.fill();
+            else ctx.stroke();
+            break;
+        }
+            
+        case 'oval':
+        case 'filledOval': {
+            // Use ellipse centered within the bounding box
+            const rX = Math.abs(w / 2);
+            const rY = Math.abs(h / 2);
+            const cX = x1 + w / 2; // Center X
+            const cY = y1 + h / 2; // Center Y
+            
+            ctx.ellipse(cX, cY, rX, rY, 0, 0, 2 * Math.PI);
+            if (tool === 'filledOval') ctx.fill();
+            else ctx.stroke();
+            break;
+        }
+    }
+}
 
 // --- Grid/Guide Drawing ---
 export function drawGuides(gridCtx, settings, center, canvasSize) {

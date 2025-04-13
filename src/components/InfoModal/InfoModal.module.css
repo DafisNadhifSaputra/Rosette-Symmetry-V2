@@ -6,11 +6,10 @@
     overflow: hidden; /* Prevent scrolling on body when open */
     background-color: rgba(0, 0, 0, 0.6);
     padding: var(--spacing);
-    backdrop-filter: blur(3px);
-    -webkit-backdrop-filter: blur(3px);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     opacity: 0; /* Start hidden for animation */
     transition: opacity var(--transition-speed) ease-out;
-    /* animation: fadeInBg var(--transition-speed) ease-out forwards; */
 }
 
 .modal.isOpen {
@@ -21,23 +20,26 @@
 }
 
 .modalContent {
-    background-color: var(--card-bg);
+    background-color: var(--glass-bg);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
     margin: auto;
     padding: calc(var(--spacing) * 1.8);
-    border: none;
-    border-radius: calc(var(--border-radius) * 1.1);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--border-radius-lg);
     width: 90%;
     max-width: 750px;
-    box-shadow: var(--shadow-lg);
+    box-shadow: var(--shadow-glass), 
+                0 25px 50px -12px rgba(0, 0, 0, 0.25);
     position: relative;
     transform: translateY(-25px) scale(0.98); /* Start slightly up and small */
     opacity: 0;
     transition: background-color var(--transition-speed) ease,
-                transform var(--transition-speed) ease-out,
+                transform var(--transition-speed) cubic-bezier(0.175, 0.885, 0.32, 1.275),
                 opacity var(--transition-speed) ease-out;
     max-height: 90vh;
     overflow-y: auto;
-    color: var(--body-text); /* Ensure text color respects theme */
+    color: var(--body-text);
 }
 
 .modal.isOpen .modalContent {
@@ -45,6 +47,21 @@
      opacity: 1;
 }
 
+/* Decorative elements */
+.modalContent::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, 
+        transparent, 
+        rgba(var(--primary-color-rgb), 0.8), 
+        transparent);
+    border-radius: var(--border-radius-lg) var(--border-radius-lg) 0 0;
+    opacity: 0.7;
+}
 
 .modalClose {
     color: var(--secondary-color);
@@ -55,37 +72,38 @@
     font-weight: 300;
     cursor: pointer;
     line-height: 1;
-    transition: color var(--transition-speed-fast) ease, transform var(--transition-speed-fast) ease;
-    background: none;
     border: none;
     padding: 0.2rem 0.5rem;
-    border-radius: 50%; /* Make hit area slightly larger */
+    border-radius: 50%;
+    background-color: transparent;
     transition: color var(--transition-speed-fast) ease,
-                transform var(--transition-speed) cubic-bezier(0.25, 0.1, 0.25, 1.5); /* Add bounce */
+                transform var(--transition-speed) cubic-bezier(0.25, 0.1, 0.25, 1.5),
+                background-color var(--transition-speed-fast) ease;
 }
 
 .modalClose:hover,
-.modalClose:focus { /* Combine hover/focus */
-    color: var(--danger-hover); /* Use hover color */
+.modalClose:focus {
+    color: var(--danger-hover);
     text-decoration: none;
     outline: none;
-    transform: scale(1.2) rotate(90deg); /* Slightly larger scale */
+    transform: scale(1.2) rotate(90deg);
+    background-color: rgba(var(--danger-color-rgb), 0.1);
 }
 
-.modalClose:focus-visible { /* Explicit visible focus */
-    /* Use global focus style, adapted for danger color */
+.modalClose:focus-visible {
     box-shadow: 0 0 0 2.5px rgba(var(--danger-color-rgb) / var(--focus-ring-opacity));
-    color: var(--danger-hover); /* Ensure color matches hover */
+    color: var(--danger-hover);
 }
 
 .modalContent h2 {
     margin-top: 0.1rem;
-    color: var(--primary-color); /* Use primary color for heading */
+    color: var(--primary-color);
     font-weight: 600;
     margin-bottom: calc(var(--spacing) * 1.2);
     transition: color var(--transition-speed) ease;
     font-size: 1.6rem;
     letter-spacing: -0.2px;
+    text-shadow: 0 1px 3px rgba(var(--primary-color-rgb), 0.2);
 }
 
 .modalContent p,
@@ -107,6 +125,7 @@
 
 .modalContent li {
     margin-bottom: 0.8em;
+    position: relative;
 }
 
 .modalContent li::marker {
@@ -114,23 +133,30 @@
     font-size: 1.05em; /* Slightly larger marker */
 }
 
-/* --- Animations (Optional, covered by transition now) --- */
-/* @keyframes fadeInBg {
-    from { backdrop-filter: blur(0px); background-color: rgba(0, 0, 0, 0); }
-    to { backdrop-filter: blur(3px); background-color: rgba(0, 0, 0, 0.6); }
+.modalContent strong {
+    color: var(--primary-color);
+    font-weight: 600;
 }
-@keyframes modalSlideIn {
-    from { opacity: 0; transform: translateY(-25px) scale(0.98); }
-    to { opacity: 1; transform: translateY(0) scale(1); }
-} */
 
 /* Responsive Modal */
 @media (max-width: 768px) {
-    .modalContent { padding: calc(var(--spacing) * 1.5); margin-top: 10%; }
+    .modalContent { 
+        padding: calc(var(--spacing) * 1.5); 
+        margin-top: 10%; 
+    }
     .modalContent h2 { font-size: 1.4rem; }
 }
+
 @media (max-width: 480px) {
-     .modalContent { width: 95%; margin-top: 8%; padding: calc(var(--spacing) * 1.2); }
-     .modalContent h2 { font-size: 1.3rem; }
-     .modalClose { font-size: 2rem; top: calc(var(--spacing) * 0.6); right: calc(var(--spacing) * 1); }
+    .modalContent { 
+        width: 95%; 
+        margin-top: 8%; 
+        padding: calc(var(--spacing) * 1.2); 
+    }
+    .modalContent h2 { font-size: 1.3rem; }
+    .modalClose { 
+        font-size: 2rem; 
+        top: calc(var(--spacing) * 0.6); 
+        right: calc(var(--spacing) * 1); 
+    }
 }

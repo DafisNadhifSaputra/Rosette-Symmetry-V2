@@ -242,13 +242,13 @@ function App() {
                 </div>
 
                 {/* Right Column: Symmetry Controls */}
-                <aside className={`${styles.rightColumn} ${styles.controlsPanel}`}>
+                <div className={`${styles.rightColumn} ${styles.controlsPanel}`}>
                      <ControlsPanel
                         settings={state.settings}
                         onSettingChange={handleSettingChange}
                         theme={theme}
                     />
-                </aside>
+                </div>
             </div>
 
             <InfoModal isOpen={isModalOpen} onClose={closeModal} />

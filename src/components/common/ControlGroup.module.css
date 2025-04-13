@@ -4,9 +4,16 @@
     margin: 0 0 calc(var(--spacing) * 1.1) 0;
     display: flex;
     flex-direction: column;
+    position: relative;
+    transition: transform var(--transition-speed) ease;
 }
+
 .controlGroup:last-child {
     margin-bottom: 0;
+}
+
+.controlGroup:hover {
+    transform: translateY(-2px);
 }
 
 /* For controls panel */
@@ -15,11 +22,32 @@
     margin-bottom: calc(var(--spacing) * 0.8);
     font-size: 1.05rem;
     padding-bottom: 0.5rem;
-    border-bottom: 1px solid var(--card-border);
+    border-bottom: 1px solid var(--glass-border);
     width: 100%;
     color: var(--heading-color);
-    transition: color var(--transition-speed) ease, border-color var(--transition-speed) ease;
+    transition: all var(--transition-speed) ease;
     letter-spacing: 0.1px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+}
+
+/* Decorative accent for legends */
+.panelLegend::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 30%;
+    height: 2px;
+    background: var(--primary-color);
+    border-radius: 1px;
+    transition: width var(--transition-speed) ease;
+}
+
+.controlGroup:hover .panelLegend::after {
+    width: 50%;
 }
 
 /* For drawing tools bar */
@@ -36,11 +64,26 @@
     letter-spacing: 0.3px;
     text-transform: uppercase;
     opacity: 0.8;
+    position: relative;
+    padding-left: 0.5rem;
+}
+
+.toolbarLegend::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 3px;
+    height: 0.9em;
+    background-color: var(--primary-color);
+    border-radius: 2px;
+    opacity: 0.7;
 }
 
 .controlsContent {
-    /* Styles for the container div if needed, e.g., for rotations list */
     display: flex;
     flex-direction: column;
-    gap: 4px; /* Small gap between radio buttons */
+    gap: 4px;
+    padding: 0.2rem 0;
 }

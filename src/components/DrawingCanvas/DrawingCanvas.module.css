@@ -1,80 +1,100 @@
 .canvasWrapper {
-    width: 100%;
     display: flex;
     flex-direction: column;
-    align-items: center; /* Center container and instructions */
+    gap: calc(var(--spacing) * 0.7);
+    width: 100%;
+    animation: fadeIn 0.4s ease-out;
 }
 
 .canvasInstructions {
-    font-size: 0.85rem;
     color: var(--text-muted);
     text-align: center;
-    transition: color var(--transition-speed) ease;
-    margin-bottom: calc(var(--spacing) * 0.5); /* Increased spacing */
-    width: 100%; /* Take full width */
+    font-size: 0.95rem;
+    padding: 0.3rem 0.5rem;
+    border-radius: var(--border-radius);
+    background-color: var(--glass-bg);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    border: 1px solid var(--glass-border);
+    margin-bottom: 0.3rem;
+    transition: all var(--transition-speed) ease;
+    transform-origin: center;
+    animation: slideInUp 0.4s ease-out;
+}
+
+.canvasInstructions:hover {
+    transform: translateY(-2px);
+    background-color: var(--glass-bg-hover);
+    color: var(--body-text);
 }
 
 .canvasContainer {
     position: relative;
+    margin: 0 auto;
+    max-width: 100%;
+    aspect-ratio: 1 / 1; /* Square canvas */
+    background-color: var(--canvas-bg);
+    border-radius: var(--border-radius-lg);
     border: 1px solid var(--canvas-border);
-    background-color: var(--canvas-bg-light); /* Default to light canvas background */
-    /* --- Use aspect-ratio for modern browsers --- */
-    aspect-ratio: 1 / 1;
-    width: 100%; /* Take full width of its parent (.leftColumn or .appContainer) */
-    max-width: var(--canvas-target-size); /* Respect max size */
-    /* --- Fallback for older browsers (padding trick) --- */
-    /* height: 0; */
-    /* padding-bottom: 100%; */
-    /* --- End Fallback --- */
-    box-shadow: var(--shadow-md);
-    overflow: hidden; /* Important for aspect-ratio and absolute children */
-    border-radius: var(--border-radius);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1), 
+                0 10px 30px rgba(0, 0, 0, 0.08);
+    cursor: crosshair;
     transition: border-color var(--transition-speed) ease,
-                box-shadow var(--transition-speed) ease, /* Ensure shadow transition */
-                background-color var(--transition-speed) ease;
-    margin-left: auto; /* Center if parent is wider */
-    margin-right: auto;
-    will-change: box-shadow; /* Optimize */
+                box-shadow var(--transition-speed) ease,
+                transform var(--transition-speed) ease;
+    will-change: transform;
+    min-height: 300px; /* Ensure minimum height */
+    min-width: 300px; /* Ensure minimum width */
+    height: var(--canvas-target-size); /* Default height */
+    width: var(--canvas-target-size); /* Default width */
+    max-height: 95vw; /* Responsive limitation */
+    max-width: 95vw; /* Responsive limitation */
 }
 
 .canvasContainer:hover {
-    /* Slightly enhance shadow on hover */
-    box-shadow: var(--shadow-lg);
-    border-color: var(--secondary-color); /* Highlight border */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15), 
+                0 15px 35px rgba(0, 0, 0, 0.1);
+    border-color: var(--primary-color);
+    transform: translateY(-3px) scale(1.005); /* Subtle lift effect */
 }
 
-/* Apply dark mode background */
-body.dark-mode .canvasContainer {
-    background-color: var(--canvas-bg-dark);
+/* Specialized cursors based on selected tool */
+.canvasContainer[data-cursor="crosshair"] { cursor: crosshair; }
+.canvasContainer[data-cursor="pencil"] { cursor: url('pencil.png') 6 24, crosshair; }
+.canvasContainer[data-cursor="default"] { cursor: default; }
+
+/* Additional class styles for canvas element itself */
+.cursorPencil {
+    cursor: url(pencil.png) 6 24, crosshair !important;
+}
+.cursorCrosshair {
+    cursor: crosshair !important;
+}
+.cursorDefault {
+    cursor: default !important;
 }
 
-
+/* Canvas Layers */
 .drawingCanvas,
 .gridCanvas {
-    display: block;
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: transparent; /* Canvases themselves are transparent */
+    border-radius: var(--border-radius-lg); /* Match container */
+    touch-action: none; /* Prevent scrolling while drawing */
 }
 
-/* Drawing canvas is visually on bottom but drawn onto */
 .drawingCanvas {
-    z-index: 0;
+    z-index: 2; /* Drawing on top - changed from 1 to 2 */
+    cursor: crosshair; /* Ensure cursor is visible */
 }
 
-/* Grid canvas is visually on top, non-interactive */
 .gridCanvas {
-    pointer-events: none;
-    z-index: 1;
+    z-index: 1; /* Grid under drawing layer - changed from 2 to 1 */
+    pointer-events: none; /* Click through to drawing canvas */
 }
-
-/* --- Cursor Styles --- */
-/* .cursorPencil is handled inline for dynamic URL */
-.cursorCrosshair { cursor: crosshair; }
-.cursorDefault { cursor: default; }
 
 /* Loading Overlay */
 .loadingOverlay {
@@ -83,34 +103,54 @@ body.dark-mode .canvasContainer {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(var(--card-bg-rgb, 255 255 255) / 0.7); /* Semi-transparent overlay */
-    color: var(--body-text);
+    background-color: rgba(var(--card-bg-rgb, 255, 255, 255), 0.7);
+    color: var(--primary-color);
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     font-size: 1.2rem;
     font-weight: 500;
     z-index: 5; /* Above canvases */
-    border-radius: var(--border-radius); /* Match container */
-    backdrop-filter: blur(2px);
-    -webkit-backdrop-filter: blur(2px);
-    opacity: 0; /* Start hidden */
-    visibility: hidden; /* Start not visible */
-    transition: opacity var(--transition-speed) ease-in-out, visibility 0s var(--transition-speed); /* Add transition */
-    pointer-events: none; /* Prevent interaction when hidden */
+    border-radius: var(--border-radius-lg); /* Match container */
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity var(--transition-speed) ease-in-out, 
+                visibility 0s var(--transition-speed);
+    pointer-events: none;
 }
 
-/* Style to apply when loading is active */
 .loadingOverlay.isLoading {
     opacity: 1;
     visibility: visible;
-    transition: opacity var(--transition-speed) ease-in-out, visibility 0s 0s;
-    pointer-events: auto; /* Allow interaction if needed (though usually not) */
+    transition: opacity var(--transition-speed) ease-in-out, 
+                visibility 0s 0s;
+    pointer-events: auto;
+}
+
+/* Loading spinner */
+.loadingOverlay::after {
+    content: '';
+    width: 30px;
+    height: 30px;
+    margin-top: 10px;
+    border: 3px solid var(--primary-color);
+    border-radius: 50%;
+    border-top-color: transparent;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
 }
 
 body.dark-mode .loadingOverlay {
-     background-color: rgba(var(--card-bg-rgb, 36 37 38) / 0.7);
+    color: var(--primary-color);
+    background-color: rgba(var(--card-bg-rgb, 36, 37, 38), 0.7);
 }
+
 /* Define RGB for card background if not already present */
 :root { --card-bg-rgb: 255, 255, 255; }
 body.dark-mode { --card-bg-rgb: 36, 37, 38; }

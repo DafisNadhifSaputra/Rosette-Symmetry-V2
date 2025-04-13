@@ -9,10 +9,15 @@
   --warning-color: #ffc107; --warning-hover: #e0a800; --warning-active: #d39e00;
   --light-color: #f8f9fa; --dark-color: #212529;
 
-  --body-bg: #fcfcfd; /* Even lighter off-white */
+  /* Warna baru untuk background biru awan */
+  --sky-blue-light: #e6f2ff;
+  --sky-blue: #c2e0ff;
+  --sky-blue-dark: #86bbf2;
+  
+  --body-bg: var(--sky-blue-light); /* Background biru awan light */
   --body-text: #343a40;
   --card-bg: #ffffff;
-  --card-border: #e9ecef; /* Slightly lighter border */
+  --card-border: rgba(255, 255, 255, 0.25); /* Transparent border for glass effect */
   --canvas-bg: #ffffff; /* Default canvas bg (can be overridden by theme) */
   --canvas-bg-light: #ffffff; /* Explicit light theme canvas bg */
   --canvas-bg-dark: #ffffff;  /* Explicit dark theme canvas bg (keeping it white) */
@@ -21,30 +26,40 @@
   --input-focus-border: var(--primary-color);
   --input-focus-shadow: rgba(0, 123, 255, 0.2); /* Softer focus shadow */
   --text-muted: #6c757d;
-  --heading-color: #212529; /* Stronger heading */
+  --heading-color: #1a5089; /* Deeper blue for heading */
   --picker-border-color: #e9ecef;
 
   --hover-bg: #f8f9fa; /* Standard light gray hover */
   --selected-bg: rgba(0, 123, 255, 0.08); /* More subtle selection */
   --selected-border: rgba(0, 123, 255, 0.2);
   --disabled-opacity: 0.55; /* Slightly less faded */
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04), 0 2px 4px rgba(0, 0, 0, 0.04); /* Softer shadow */
-  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.06);
-  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.06), 0 4px 6px rgba(0, 0, 0, 0.07);
+  
+  /* Improved shadows for depth */
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.08), 0 2px 4px rgba(0, 0, 0, 0.12);
+  --shadow-lg: 0 10px 20px rgba(0, 0, 0, 0.1), 0 6px 10px rgba(0, 0, 0, 0.15);
+  --shadow-glass: 0 8px 32px rgba(31, 38, 135, 0.15);
+
+  /* Efek glass morphism */
+  --glass-bg: rgba(255, 255, 255, 0.6);
+  --glass-bg-hover: rgba(255, 255, 255, 0.8);
+  --glass-border: rgba(255, 255, 255, 0.18);
+  --glass-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
 
   /* Warna Garis Panduan */
   --grid-slice-color: #adb5bd;
   --grid-reflect-line-color: #fd7e14;
 
   /* Layout */
-  --canvas-target-size: 600px; /* Target size for canvas calculation */
-  --controls-width: 330px; /* Slightly wider controls */
+  --canvas-target-size: 550px; /* Adjusted for better layout */
+  --controls-width: 330px; /* Panel kontrol di kanan */
   --spacing: 1rem;
   --layout-gap: calc(var(--spacing) * 1.8); /* Adjusted gap */
-  --border-radius: 0.6rem; /* Slightly larger radius */
+  --border-radius: 0.8rem; /* Larger radius for modern look */
+  --border-radius-lg: 1.2rem; /* Extra large radius for cards */
   --font-family-sans-serif: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"; /* Modern stack */
-  --transition-speed: 0.18s; /* Slightly faster transitions */
-  --transition-speed-fast: 0.12s;
+  --transition-speed: 0.25s; /* Slightly slower for smoother transitions */
+  --transition-speed-fast: 0.15s;
   --focus-ring-opacity: 0.2;
 }
 
@@ -58,25 +73,37 @@ body.dark-mode {
   --warning-color: #fcc419; --warning-hover: #ffd868; --warning-active: #ffe09c;
   --light-color: #343a40; --dark-color: #f1f3f5;
 
-  --body-bg: #121212; /* Standard dark bg */
+  /* Dark mode sky blues */
+  --sky-blue-dark: #102841;
+  --sky-blue: #153957;
+  --sky-blue-light: #1d4e78;
+
+  --body-bg: var(--sky-blue-dark); /* Dark blue background */
   --body-text: #e0e0e0;
-  --card-bg: #1e1e1e; /* Slightly lighter card */
-  --card-border: #333; /* Subtle border */
-  /* --canvas-bg: var(--canvas-bg-dark); */ /* Canvas bg is controlled by specific var */
+  --card-bg: rgba(30, 30, 40, 0.75); /* Semi-transparent card */
+  --card-border: rgba(80, 80, 95, 0.2); /* Subtle border */
   --canvas-border: #383838;
   --input-border: #444;
   --input-focus-border: var(--primary-color);
   --input-focus-shadow: rgba(77, 171, 247, 0.3);
   --text-muted: #9e9e9e; /* Lighter muted text */
-  --heading-color: #ffffff; /* Brighter heading */
+  --heading-color: #8ecdf9; /* Light blue heading */
   --picker-border-color: #333;
 
-  --hover-bg: #2c2c2c; /* Dark hover */
+  --hover-bg: rgba(44, 44, 60, 0.7); /* Semi-transparent hover */
   --selected-bg: rgba(77, 171, 247, 0.12);
   --selected-border: rgba(77, 171, 247, 0.3);
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.2), 0 2px 4px rgba(0, 0, 0, 0.25);
-  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.25), 0 1px 3px rgba(0, 0, 0, 0.3);
-  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.3), 0 4px 6px rgba(0, 0, 0, 0.35);
+  
+  /* Darker shadows */
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.25), 0 1px 2px rgba(0, 0, 0, 0.35);
+  --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.3), 0 2px 4px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 10px 20px rgba(0, 0, 0, 0.35), 0 6px 10px rgba(0, 0, 0, 0.45);
+  --shadow-glass: 0 8px 32px rgba(0, 0, 0, 0.35);
+
+  /* Glass morphism dark */
+  --glass-bg: rgba(30, 30, 40, 0.7);
+  --glass-bg-hover: rgba(40, 40, 50, 0.8);
+  --glass-border: rgba(80, 80, 95, 0.2);
 
   --grid-slice-color: #777;
   --grid-reflect-line-color: #fab005;
@@ -89,15 +116,52 @@ body.dark-mode {
 body {
   font-family: var(--font-family-sans-serif);
   display: flex; flex-direction: column; align-items: center;
-  background-color: var(--body-bg); color: var(--body-text);
-  margin: 0; padding: calc(var(--spacing) * 2); /* Standard padding */
-  min-height: 100vh; font-size: 15.5px; /* Slightly smaller base font */
-  line-height: 1.65; /* Slightly increased line height */
+  background-color: var(--body-bg);
+  color: var(--body-text);
+  margin: 0; 
+  padding: calc(var(--spacing) * 2);
+  min-height: 100vh; 
+  font-size: 15.5px;
+  line-height: 1.65;
   transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease;
-  -webkit-font-smoothing: antialiased; /* Smoother fonts */
+  -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  /* Optional: Subtle background gradient */
-  /* background-image: linear-gradient(to bottom, var(--body-bg), color-mix(in srgb, var(--body-bg) 95%, var(--secondary-color) 5%)); */
+  
+  /* Background gradient dengan pola awan */
+  background-image: 
+    linear-gradient(to bottom, 
+      rgba(255,255,255,0.1) 0%,
+      rgba(255,255,255,0.05) 50%,
+      rgba(255,255,255,0) 100%),
+    radial-gradient(
+      circle at 90% 10%,
+      var(--sky-blue) 0%,
+      transparent 40%
+    ),
+    radial-gradient(
+      circle at 10% 80%,
+      var(--sky-blue-dark) 0%,
+      transparent 50%
+    );
+  background-attachment: fixed;
+  background-size: cover;
+}
+
+body.dark-mode {
+  background-image: 
+    linear-gradient(to bottom, 
+      rgba(0,0,0,0.3) 0%,
+      rgba(0,0,0,0.1) 100%),
+    radial-gradient(
+      circle at 90% 10%,
+      var(--sky-blue) 0%,
+      transparent 60%
+    ),
+    radial-gradient(
+      circle at 10% 80%,
+      rgba(10, 20, 40, 0.8) 0%,
+      transparent 50%
+    );
 }
 
 /* Define RGB versions for focus rings */
@@ -129,10 +193,51 @@ html {
     scroll-behavior: smooth;
 }
 
-/* Improve scrollbar styling globally (optional, can conflict with component-specific) */
-/* ::-webkit-scrollbar { width: 10px; height: 10px; }
-::-webkit-scrollbar-track { background: var(--card-bg); border-radius: 5px; }
-::-webkit-scrollbar-thumb { background-color: var(--secondary-color); border-radius: 5px; border: 2px solid var(--card-bg); }
-::-webkit-scrollbar-thumb:hover { background-color: var(--secondary-hover); }
-body { scrollbar-width: thin; scrollbar-color: var(--secondary-color) var(--card-bg); } */
-/* Commented out global scrollbar to prefer component-specific */
+/* Improved scrollbar styling globally */
+::-webkit-scrollbar { 
+  width: 10px; 
+  height: 10px; 
+}
+::-webkit-scrollbar-track { 
+  background: rgba(var(--primary-color-rgb), 0.05);
+  border-radius: 8px; 
+}
+::-webkit-scrollbar-thumb { 
+  background-color: rgba(var(--secondary-color-rgb), 0.5); 
+  border-radius: 8px; 
+  border: 2px solid var(--body-bg); 
+  transition: background-color var(--transition-speed-fast);
+}
+::-webkit-scrollbar-thumb:hover { 
+  background-color: rgba(var(--secondary-color-rgb), 0.7);
+}
+body { 
+  scrollbar-width: thin; 
+  scrollbar-color: var(--secondary-color) var(--body-bg); 
+}
+
+/* Animation keyframes for use with elements */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideInUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+/* Utility class for glass morphism */
+.glass {
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-glass);
+}

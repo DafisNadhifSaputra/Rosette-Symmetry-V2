@@ -1,101 +1,157 @@
 .canvasFooterControls {
     display: flex;
-    flex-wrap: wrap; /* Allow wrapping on smaller screens */
-    align-items: center;
-    justify-content: center; /* Center items */
-    gap: calc(var(--spacing) * 0.7);
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.6rem;
     width: 100%;
-    margin-top: calc(var(--spacing) * 0.8);
+    padding: calc(var(--spacing) * 1.4);
+    background-color: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-glass);
+    transition: all var(--transition-speed) ease;
+    position: relative;
+    overflow: hidden;
+    animation: slideInUp 0.5s ease-out;
+}
+
+.canvasFooterControls:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-lg);
+}
+
+/* Decorative accent */
+.canvasFooterControls::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(90deg, 
+        transparent, 
+        rgba(var(--primary-color-rgb), 0.7), 
+        transparent);
+    opacity: 0.5;
+    transition: opacity var(--transition-speed);
+}
+
+.canvasFooterControls:hover::before {
+    opacity: 0.7;
 }
 
 /* --- Toggle Label Styling (like a button) --- */
 .toggleLabel {
-    cursor: pointer;
     display: inline-flex;
     align-items: center;
-    gap: 0.6em;
-    font-size: 0.9rem;
-    padding: 0.55rem 1rem; /* Match button padding */
-    border-radius: var(--border-radius);
-    transition: background-color var(--transition-speed-fast) ease,
-                color var(--transition-speed-fast) ease,
-                border-color var(--transition-speed-fast) ease,
-                box-shadow var(--transition-speed) ease, /* Slower shadow */
-                transform var(--transition-speed-fast) ease,
-                filter var(--transition-speed-fast) ease; /* Add filter */
-    will-change: transform, box-shadow, filter; /* Optimize */
+    justify-content: center;
+    gap: 0.5em;
+    font-weight: 500;
+    line-height: 1.5;
+    text-align: center;
     vertical-align: middle;
-    color: var(--text-muted); /* Default text color */
-    border: 1px solid var(--input-border); /* Match button border */
-    background-color: var(--card-bg); /* Use card background */
+    cursor: pointer;
     user-select: none;
+    background-color: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    padding: 0.55rem 1rem;
+    font-size: 0.9rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-sm);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    transition: all var(--transition-speed) ease;
+    position: relative;
+    overflow: hidden;
+    color: var(--secondary-color);
+}
+
+/* Subtle highlight effect on toggle label */
+.toggleLabel::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 50%;
+    background: linear-gradient(to bottom, 
+        rgba(255, 255, 255, 0.15), 
+        rgba(255, 255, 255, 0));
+    border-radius: var(--border-radius) var(--border-radius) 0 0;
+    opacity: 0.5;
+    transition: opacity var(--transition-speed-fast);
+    pointer-events: none;
+}
+
+/* Hide input checkbox visually */
+.checkboxInput {
+    position: absolute;
+    opacity: 0;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+}
+
+/* Styling for checked toggle state */
+.checkboxInput:checked + span {
+    color: var(--primary-color);
+    font-weight: 600;
+    text-shadow: 0 0 20px rgba(var(--primary-color-rgb), 0.3);
 }
 
 .toggleLabel:hover {
-    background-color: var(--hover-bg);
-    color: var(--body-text);
+    background-color: var(--glass-bg-hover);
     border-color: var(--secondary-hover);
-    transform: translateY(-2px) scale(1.02); /* Match button hover */
-    box-shadow: var(--shadow-md); /* Match button hover */
-    filter: brightness(1.05); /* Match button hover */
-}
-
-/* Style the checkbox visually */
-.checkboxInput {
-    cursor: pointer;
-    width: 1.1em;
-    height: 1.1em;
-    margin-right: 0; /* Gap handled by label */
-    accent-color: var(--primary-color); /* Style the check color */
-    vertical-align: middle;
-    position: relative;
-    top: -1px; /* Minor alignment */
-    flex-shrink: 0;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    color: var(--body-text);
 }
 
 /* Focus state for the label containing the checkbox */
 .toggleLabel:focus-within {
-    outline: none; /* Remove default outline */
-    /* Use global focus style */
+    outline: none;
     box-shadow: 0 0 0 2.5px color-mix(in srgb, var(--primary-color) calc(var(--focus-ring-opacity) * 100%), transparent);
     border-color: var(--input-focus-border);
 }
 
-
-/* Dark Mode Toggle Specifics */
-/* Moved to Button.module.css */
-
-
-/* Responsive Footer Controls */
+/* Responsive adjustment */
 @media (max-width: 768px) {
     .canvasFooterControls {
-        gap: calc(var(--spacing) * 0.6);
+        padding: calc(var(--spacing) * 1.2);
+        gap: 0.5rem;
     }
-    /* Make buttons and toggle label grow slightly on medium screens */
-    .canvasFooterControls > *,
-    .canvasFooterControls > label {
-        flex-grow: 1;
-        justify-content: center; /* Center content within button/label */
+    
+    .toggleLabel, 
+    .canvasFooterControls .btn {
         padding: 0.5rem 0.8rem;
         font-size: 0.85rem;
-    }
-    /* Don't let theme toggle grow */
-    .darkModeToggle { /* Use Button's className if applied */
-        flex-grow: 0 !important; /* Prevent toggle button from growing */
-        min-width: auto; /* Reset min-width if Button has one */
     }
 }
 
 @media (max-width: 480px) {
     .canvasFooterControls {
-        flex-direction: column; /* Stack vertically */
-        align-items: stretch; /* Make items full width */
+        padding: calc(var(--spacing) * 1);
+        gap: 0.4rem;
     }
-     /* Ensure buttons/labels are full width */
-     .canvasFooterControls > *,
-     .canvasFooterControls > label {
-        width: 100%;
-        justify-content: center;
-        padding: 0.6rem 1rem; /* Slightly larger padding */
+    
+    .toggleLabel, 
+    .canvasFooterControls .btn {
+        padding: 0.45rem 0.7rem;
+        font-size: 0.8rem;
+    }
+    
+    .canvasFooterControls .btn span,
+    .toggleLabel span {
+        display: none; /* Hide text on mobile */
+    }
+    
+    .canvasFooterControls .btn svg {
+        margin: 0; /* Center icon when text is hidden */
+    }
+    
+    .canvasFooterControls .darkModeToggle span.toggleText {
+        display: none;
     }
 }
