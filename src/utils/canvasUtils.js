@@ -294,19 +294,23 @@ export function drawGuides(gridCtx, settings, center, canvasSize) {
     const logicalWidth = canvasSize.width;
     const logicalHeight = canvasSize.height;
 
-    gridCtx.clearRect(0, 0, logicalWidth, logicalHeight); // Clear previous guides
+    // Clear previous guides completely
+    gridCtx.clearRect(0, 0, gridCtx.canvas.width, gridCtx.canvas.height);
 
+    // Check if guides should be shown
     if (!settings.showGuides) return;
+
+    console.log("Drawing guides: rotation=" + settings.rotationOrder + ", reflection=" + settings.reflectionEnabled);
 
     const N = settings.rotationOrder;
     const reflect = settings.reflectionEnabled;
     const cx = center.x;
     const cy = center.y;
 
-    if (N <= 0 || (N === 1 && !reflect)) return; // No guides for C1
+    // No guides for rotation order 1 without reflection
+    if (N <= 0 || (N === 1 && !reflect)) return;
 
     gridCtx.save();
-    gridCtx.lineWidth = 1 / dpr; // Thin lines
 
     // Helper to find intersection with canvas bounds
     const calculateEndPoint = (angle) => {
@@ -340,7 +344,7 @@ export function drawGuides(gridCtx, settings, center, canvasSize) {
         // Draw Dihedral (Dn) reflection lines (solid orange)
         gridCtx.strokeStyle = reflectColor;
         gridCtx.setLineDash([]);
-        gridCtx.lineWidth = 1.2 / dpr;
+        gridCtx.lineWidth = Math.max(1.5, 1.8 / dpr); // Thicker lines
         const angleIncrement = Math.PI / N;
         for (let i = 0; i < N; i++) {
             const angle = i * angleIncrement;
@@ -354,9 +358,9 @@ export function drawGuides(gridCtx, settings, center, canvasSize) {
         // Draw Cyclic (Cn) rotation sector lines (dashed gray)
         if (N > 1) {
             gridCtx.strokeStyle = sliceColor;
-            const dash = 4 / dpr;
+            const dash = 6 / dpr; // Longer dash for better visibility
             gridCtx.setLineDash([dash, dash]);
-            gridCtx.lineWidth = 1.0 / dpr;
+            gridCtx.lineWidth = Math.max(1.2, 1.5 / dpr); // Slightly thicker lines
             const angleIncrement = (2 * Math.PI) / N;
             for (let i = 0; i < N; i++) {
                 const angle = i * angleIncrement;
@@ -368,5 +372,13 @@ export function drawGuides(gridCtx, settings, center, canvasSize) {
             }
         }
     }
+    
+    // Draw center point for better visibility
+    gridCtx.setLineDash([]);
+    gridCtx.beginPath();
+    gridCtx.arc(cx, cy, 3, 0, Math.PI * 2);
+    gridCtx.fillStyle = reflectColor;
+    gridCtx.fill();
+    
     gridCtx.restore();
 }

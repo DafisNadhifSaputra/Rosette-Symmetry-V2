@@ -87,13 +87,14 @@
 }
 
 .drawingCanvas {
-    z-index: 2; /* Drawing on top - changed from 1 to 2 */
+    z-index: 1; /* Drawing canvas below grid lines */
     cursor: crosshair; /* Ensure cursor is visible */
 }
 
 .gridCanvas {
-    z-index: 1; /* Grid under drawing layer - changed from 2 to 1 */
+    z-index: 2; /* Grid above drawing canvas so guidelines are visible */
     pointer-events: none; /* Click through to drawing canvas */
+    opacity: 1; /* Ensure grid is fully visible */
 }
 
 /* Loading Overlay */

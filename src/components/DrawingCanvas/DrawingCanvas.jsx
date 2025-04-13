@@ -158,6 +158,9 @@ function DrawingCanvas({
      // --- Canvas Setup & Resize ---
      // Initializes or resizes the drawing and grid canvases
      const setupCanvas = useCallback((isInitialSetup = false) => {
+         // Add debug output to track initialization attempts
+         console.log(`setupCanvas called. isInitialSetup=${isInitialSetup}, isInitialized=${isInitialized}`);
+         
          const canvas = drawingCanvasRef.current;
          const grid = gridCanvasRef.current;
          const container = canvas?.parentElement;
@@ -239,8 +242,9 @@ function DrawingCanvas({
          console.log("Canvas Setup/Resized. Logical Size:", size, "Physical Size:", physicalSize, "Resized:", resized, "Initial:", isInitialSetup);
 
          // --- Initial Setup Logic ---
-         // Only run this block once on the very first successful setup with valid size
-         if (isInitialSetup && !isInitialized && physicalSize > 0 && drawCtxRef.current) {
+         // Force initialization on the first successful setup with valid size and context
+         // Change this condition to ensure initialization happens regardless of isInitialSetup flag
+         if (!isInitialized && physicalSize > 0 && drawCtxRef.current) {
              const ctx = drawCtxRef.current;
              console.log("Performing initial canvas setup...");
              try {
@@ -640,9 +644,36 @@ function DrawingCanvas({
         // redrawGuides function changes (due to settings or canvasSize changes)
         // It's separated to avoid re-running the main setup/resize effect just for guides.
         if (isInitialized) { // Only draw guides after initial setup
+             console.log("Redrawing guides due to settings or size change");
              redrawGuides();
         }
     }, [redrawGuides, isInitialized]); // Depend on the memoized redraw function and initialization status
+
+    
+    // Effect: Detect changes in symmetry settings (rotation/reflection) or showGuides toggle
+    useEffect(() => {
+        if (isInitialized) {
+            console.log("Settings changed: showGuides=", settings.showGuides, 
+                        "rotationOrder=", settings.rotationOrder, 
+                        "reflectionEnabled=", settings.reflectionEnabled);
+            // Always redraw the guides when any of these settings change
+            redrawGuides();
+            
+            // Only redraw entire canvas for existing drawings when symmetry settings change
+            if (actions.length > 0) {
+                console.log("Symmetry settings changed, redrawing canvas with new settings");
+                redrawCommittedState();
+            }
+        }
+    }, [
+        settings.rotationOrder, 
+        settings.reflectionEnabled, 
+        settings.showGuides, 
+        isInitialized, 
+        actions.length, 
+        redrawCommittedState,
+        redrawGuides
+    ]);
 
 
     // Effect: Preview Drawing Loop (using requestAnimationFrame)
