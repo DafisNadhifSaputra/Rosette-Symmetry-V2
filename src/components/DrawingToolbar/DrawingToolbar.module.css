@@ -1,0 +1,32 @@
+.drawingToolsBar {
+    display: grid;
+    /* Start with 3 columns, allow auto-fit */
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: calc(var(--spacing) * 1.2);
+    width: 100%;
+    margin-top: calc(var(--spacing) * 0.5);
+    padding: calc(var(--spacing) * 1.2);
+    border: 1px solid var(--card-border);
+    background-color: var(--card-bg);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-sm);
+    transition: background-color var(--transition-speed) ease, border-color var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .drawingToolsBar {
+        gap: calc(var(--spacing) * 0.9);
+        padding: calc(var(--spacing) * 1);
+        /* Allow more flexible fitting */
+         grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+    }
+}
+@media (max-width: 480px) {
+    .drawingToolsBar {
+        /* Force 2 columns on smallest screens */
+        grid-template-columns: 1fr 1fr;
+        gap: calc(var(--spacing) * 0.8);
+        padding: calc(var(--spacing) * 0.8);
+    }
+}

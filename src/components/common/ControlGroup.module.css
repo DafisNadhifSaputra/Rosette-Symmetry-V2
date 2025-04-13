@@ -1,0 +1,46 @@
+.controlGroup {
+    border: none;
+    padding: 0;
+    margin: 0 0 calc(var(--spacing) * 1.1) 0;
+    display: flex;
+    flex-direction: column;
+}
+.controlGroup:last-child {
+    margin-bottom: 0;
+}
+
+/* For controls panel */
+.panelLegend {
+    font-weight: 600;
+    margin-bottom: calc(var(--spacing) * 0.8);
+    font-size: 1.05rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--card-border);
+    width: 100%;
+    color: var(--heading-color);
+    transition: color var(--transition-speed) ease, border-color var(--transition-speed) ease;
+    letter-spacing: 0.1px;
+}
+
+/* For drawing tools bar */
+.toolbarLegend {
+    font-size: 0.85rem;
+    font-weight: 500;
+    margin-bottom: calc(var(--spacing) * 0.6);
+    padding-bottom: 0;
+    border: none;
+    text-align: left;
+    width: 100%;
+    color: var(--heading-color);
+    transition: color var(--transition-speed) ease;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+    opacity: 0.8;
+}
+
+.controlsContent {
+    /* Styles for the container div if needed, e.g., for rotations list */
+    display: flex;
+    flex-direction: column;
+    gap: 4px; /* Small gap between radio buttons */
+}

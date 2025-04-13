@@ -1,0 +1,108 @@
+.controlsPanel {
+    /* Styles inherited from App.module.css .rightColumn */
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--spacing) * 0.8); /* Gap between control groups */
+}
+
+/* New style for horizontal layout */
+.horizontalControls {
+    display: flex;
+    flex-direction: row; /* Arrange children horizontally */
+    gap: calc(var(--spacing) * 1.5); /* Gap between horizontal groups */
+    align-items: flex-start; /* Align items at the top */
+    flex-wrap: wrap; /* Allow wrapping on smaller screens if needed */
+}
+
+/* Adjustments for items within the horizontal layout */
+.horizontalControls > fieldset { /* Target ControlGroup fieldsets */
+    margin-bottom: 0; /* Remove bottom margin when horizontal */
+    flex: 1; /* Allow groups to grow */
+    min-width: 150px; /* Minimum width before wrapping */
+}
+
+/* Specific adjustments if needed */
+.symmetryGroup {
+    flex: 0 1 180px; /* Don't grow as much, fixed basis */
+}
+.rotationGroup {
+    flex: 1 1 200px; /* Allow more space */
+}
+.colorGroup {
+    flex: 1 1 220px; /* Allow more space */
+}
+
+.rotationsList {
+    max-height: 260px; /* Adjust as needed */
+    overflow-y: auto;
+    padding-right: 10px; /* Space for scrollbar */
+    margin-right: -10px; /* Offset padding */
+    scrollbar-width: thin; /* Firefox */
+    scrollbar-color: var(--secondary-color) transparent; /* Firefox */
+    display: flex;
+    flex-direction: column;
+    gap: 2px; /* Smaller gap for rotation list items */
+}
+
+/* Webkit Scrollbar Styles */
+.rotationsList::-webkit-scrollbar {
+    width: 9px; /* Slightly wider */
+}
+.rotationsList::-webkit-scrollbar-track {
+    background: transparent;
+    border-radius: 5px; /* Match thumb radius */
+    margin-top: 4px;
+    margin-bottom: 4px;
+}
+.rotationsList::-webkit-scrollbar-thumb {
+    background-color: var(--secondary-color);
+    border-radius: 5px;
+    border: 2.5px solid var(--card-bg); /* Slightly thicker border */
+    background-clip: content-box;
+    transition: background-color var(--transition-speed-fast); /* Add transition */
+}
+.rotationsList::-webkit-scrollbar-thumb:hover {
+    background-color: var(--secondary-hover);
+}
+
+/* Ensure scrollbar thumb border contrasts in dark mode */
+body.dark-mode .rotationsList::-webkit-scrollbar-thumb {
+    border-color: var(--card-bg);
+}
+
+/* Adjust legend margin for color picker */
+.colorPickerGroup legend {
+    margin-bottom: calc(var(--spacing) * 0.4) !important; /* Reduce margin specifically */
+    padding-bottom: 0.4rem !important;
+}
+
+/* Styling for subscript in rotation label */
+.rotationsList span sub {
+    font-size: 0.75em;
+    position: relative;
+    bottom: -0.2em; /* Adjust vertical alignment */
+    margin-left: 0.1em;
+}
+
+/* Responsive */
+@media (max-width: 1200px) { /* Adjust breakpoint if needed */
+    .horizontalControls {
+        gap: calc(var(--spacing) * 1);
+    }
+}
+
+@media (max-width: 900px) { /* When layout stacks */
+     .horizontalControls {
+         flex-direction: column; /* Stack vertically again */
+         gap: calc(var(--spacing) * 0.8);
+     }
+     .horizontalControls > fieldset {
+         min-width: 100%; /* Take full width when stacked */
+         flex-basis: auto;
+     }
+     .rotationsList { max-height: 200px; }
+}
+
+@media (max-width: 480px) {
+    .rotationsList { max-height: 160px; }
+}

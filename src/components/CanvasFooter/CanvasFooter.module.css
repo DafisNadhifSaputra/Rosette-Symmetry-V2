@@ -1,0 +1,101 @@
+.canvasFooterControls {
+    display: flex;
+    flex-wrap: wrap; /* Allow wrapping on smaller screens */
+    align-items: center;
+    justify-content: center; /* Center items */
+    gap: calc(var(--spacing) * 0.7);
+    width: 100%;
+    margin-top: calc(var(--spacing) * 0.8);
+}
+
+/* --- Toggle Label Styling (like a button) --- */
+.toggleLabel {
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6em;
+    font-size: 0.9rem;
+    padding: 0.55rem 1rem; /* Match button padding */
+    border-radius: var(--border-radius);
+    transition: background-color var(--transition-speed-fast) ease,
+                color var(--transition-speed-fast) ease,
+                border-color var(--transition-speed-fast) ease,
+                box-shadow var(--transition-speed) ease, /* Slower shadow */
+                transform var(--transition-speed-fast) ease,
+                filter var(--transition-speed-fast) ease; /* Add filter */
+    will-change: transform, box-shadow, filter; /* Optimize */
+    vertical-align: middle;
+    color: var(--text-muted); /* Default text color */
+    border: 1px solid var(--input-border); /* Match button border */
+    background-color: var(--card-bg); /* Use card background */
+    user-select: none;
+}
+
+.toggleLabel:hover {
+    background-color: var(--hover-bg);
+    color: var(--body-text);
+    border-color: var(--secondary-hover);
+    transform: translateY(-2px) scale(1.02); /* Match button hover */
+    box-shadow: var(--shadow-md); /* Match button hover */
+    filter: brightness(1.05); /* Match button hover */
+}
+
+/* Style the checkbox visually */
+.checkboxInput {
+    cursor: pointer;
+    width: 1.1em;
+    height: 1.1em;
+    margin-right: 0; /* Gap handled by label */
+    accent-color: var(--primary-color); /* Style the check color */
+    vertical-align: middle;
+    position: relative;
+    top: -1px; /* Minor alignment */
+    flex-shrink: 0;
+}
+
+/* Focus state for the label containing the checkbox */
+.toggleLabel:focus-within {
+    outline: none; /* Remove default outline */
+    /* Use global focus style */
+    box-shadow: 0 0 0 2.5px color-mix(in srgb, var(--primary-color) calc(var(--focus-ring-opacity) * 100%), transparent);
+    border-color: var(--input-focus-border);
+}
+
+
+/* Dark Mode Toggle Specifics */
+/* Moved to Button.module.css */
+
+
+/* Responsive Footer Controls */
+@media (max-width: 768px) {
+    .canvasFooterControls {
+        gap: calc(var(--spacing) * 0.6);
+    }
+    /* Make buttons and toggle label grow slightly on medium screens */
+    .canvasFooterControls > *,
+    .canvasFooterControls > label {
+        flex-grow: 1;
+        justify-content: center; /* Center content within button/label */
+        padding: 0.5rem 0.8rem;
+        font-size: 0.85rem;
+    }
+    /* Don't let theme toggle grow */
+    .darkModeToggle { /* Use Button's className if applied */
+        flex-grow: 0 !important; /* Prevent toggle button from growing */
+        min-width: auto; /* Reset min-width if Button has one */
+    }
+}
+
+@media (max-width: 480px) {
+    .canvasFooterControls {
+        flex-direction: column; /* Stack vertically */
+        align-items: stretch; /* Make items full width */
+    }
+     /* Ensure buttons/labels are full width */
+     .canvasFooterControls > *,
+     .canvasFooterControls > label {
+        width: 100%;
+        justify-content: center;
+        padding: 0.6rem 1rem; /* Slightly larger padding */
+    }
+}

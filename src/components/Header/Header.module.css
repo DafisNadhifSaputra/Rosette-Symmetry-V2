@@ -1,0 +1,58 @@
+.header {
+    width: 100%;
+    text-align: center;
+    margin-bottom: var(--spacing);
+}
+
+.header h1 {
+    margin-top: 0;
+    margin-bottom: 0.3rem;
+    font-weight: 600;
+    color: var(--heading-color);
+    font-size: 2rem;
+    transition: color var(--transition-speed) ease;
+    letter-spacing: -0.5px;
+}
+
+.header h2 {
+    margin-top: 0;
+    margin-bottom: 0.7rem;
+    font-size: 1.05rem;
+    font-weight: 400;
+    color: var(--text-muted);
+    transition: color var(--transition-speed) ease;
+}
+
+.infoLink button {
+    background: none;
+    border: none;
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 500;
+    cursor: pointer;
+    padding: 0;
+    font-size: 0.9em;
+    font-family: inherit;
+    border-bottom: 1px dashed var(--primary-color);
+    transition: color var(--transition-speed-fast) ease,
+                border-color var(--transition-speed-fast) ease,
+                opacity var(--transition-speed-fast) ease; /* Add opacity */
+}
+
+.infoLink button:hover,
+.infoLink button:focus-visible {
+    color: var(--primary-hover);
+    border-bottom-style: solid;
+    border-color: var(--primary-hover);
+    opacity: 0.85; /* Slightly fade on hover/focus */
+    outline: none; /* Remove default focus outline as border provides feedback */
+}
+
+/* Responsive Header */
+@media (max-width: 768px) {
+    .header h1 { font-size: 1.8rem; }
+    .header h2 { font-size: 1rem; }
+}
+@media (max-width: 480px) {
+    .header h1 { font-size: 1.6rem; }
+}

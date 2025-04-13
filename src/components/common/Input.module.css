@@ -1,0 +1,165 @@
+.label {
+    display: flex;
+    align-items: center;
+    gap: 0.7em;
+    margin-bottom: 5px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    padding: 0.6rem 0.9rem;
+    border-radius: calc(var(--border-radius) * 0.9);
+    transition: background-color var(--transition-speed-fast) ease-in-out,
+                border-color var(--transition-speed-fast) ease-in-out,
+                color var(--transition-speed-fast) ease-in-out,
+                box-shadow var(--transition-speed) ease-in-out, /* Slower shadow */
+                transform var(--transition-speed-fast) ease;
+    border: 1px solid transparent;
+    position: relative;
+    user-select: none;
+    will-change: background-color, transform; /* Optimize */
+}
+
+.label:hover:not(.selected) {
+    background-color: var(--hover-bg);
+    transform: translateX(2px); /* Subtle shift on hover */
+    color: var(--body-text); /* Ensure text color changes on hover */
+}
+
+/* Visually hide the actual input */
+.hiddenInput {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    border: 0;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    white-space: nowrap;
+}
+
+/* --- Custom Controls (Radio/Checkbox Visuals) --- */
+.customRadio,
+.customCheckbox {
+    display: inline-block;
+    width: 1.2em;
+    height: 1.2em;
+    border: 1.5px solid var(--input-border);
+    background-color: var(--card-bg);
+    flex-shrink: 0;
+    margin-right: 0; /* Gap handled by label */
+    transition: background-color var(--transition-speed-fast) ease-in-out,
+                border-color var(--transition-speed-fast) ease-in-out,
+                box-shadow var(--transition-speed) ease; /* Slower shadow */
+    position: relative; /* Needed for pseudo-elements */
+    top: 0; /* Adjust vertical alignment if needed */
+}
+
+/* Checkbox specifics */
+.customCheckbox {
+    border-radius: 0.25em;
+}
+
+.hiddenInput:checked + .customCheckbox {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    /* Add subtle scale effect */
+    /* transform: scale(1.05); */ /* Maybe too much? */
+}
+
+/* Checkmark for Checkbox */
+.hiddenInput:checked + .customCheckbox::after {
+    content: '';
+    display: block;
+    width: 0.65em;
+    height: 0.3em;
+    border-left: 2px solid var(--card-bg); /* Use card bg for checkmark color */
+    border-bottom: 2px solid var(--card-bg);
+    transform: rotate(-45deg) translate(1px, -1px); /* Adjust position */
+    position: absolute;
+    left: 0.18em; /* Adjust position */
+    top: 0.3em; /* Adjust position */
+    /* Animate checkmark appearance */
+    opacity: 0;
+    transform: rotate(-45deg) translate(1px, -1px) scale(0.5);
+    transition: opacity var(--transition-speed-fast) ease-in-out 0.05s, transform var(--transition-speed-fast) ease-in-out 0.05s;
+}
+.hiddenInput:checked + .customCheckbox::after {
+    opacity: 1;
+    transform: rotate(-45deg) translate(1px, -1px) scale(1);
+}
+
+/* Radio specifics */
+.customRadio {
+    border-radius: 50%;
+}
+
+.hiddenInput:checked + .customRadio {
+    border-color: var(--primary-color);
+    border-width: 1.5px; /* Keep border width consistent */
+}
+
+/* Inner dot for Radio */
+.hiddenInput:checked + .customRadio::after {
+    content: '';
+    display: block;
+    width: 0.6em; /* Size of the inner dot */
+    height: 0.6em;
+    background-color: var(--primary-color);
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    /* Animate inner dot appearance */
+    transform: translate(-50%, -50%) scale(0);
+    transition: transform var(--transition-speed-fast) ease-in-out 0.05s;
+}
+.hiddenInput:checked + .customRadio::after {
+    transform: translate(-50%, -50%) scale(1);
+}
+
+/* --- Focus Styles (Applied to the custom element via sibling selector) --- */
+.hiddenInput:focus-visible + .customRadio,
+.hiddenInput:focus-visible + .customCheckbox {
+    box-shadow: 0 0 0 2.5px color-mix(in srgb, var(--primary-color) calc(var(--focus-ring-opacity) * 100%), transparent);
+    border-color: var(--input-focus-border);
+}
+
+/* --- Selected Label State --- */
+.selected {
+    background-color: var(--selected-bg);
+    border-color: var(--selected-border);
+    /* Add subtle shadow when selected */
+    box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+}
+
+/* Style the text span inside the selected label */
+.selected span:not(.customRadio):not(.customCheckbox) {
+    color: var(--primary-color);
+    font-weight: 500;
+}
+/* Ensure contrast in dark mode */
+body.dark-mode .selected span:not(.customRadio):not(.customCheckbox) {
+     color: var(--primary-color); /* Primary color usually works well */
+}
+
+/* Styles specific to toolbar inputs if needed */
+.toolbarLabel {
+    padding: 0.5rem 0.8rem;
+    font-size: 0.9rem;
+    margin-bottom: 4px;
+    transition: background-color var(--transition-speed-fast) ease-in-out,
+                border-color var(--transition-speed-fast) ease-in-out,
+                color var(--transition-speed-fast) ease-in-out,
+                box-shadow var(--transition-speed) ease-in-out,
+                transform var(--transition-speed-fast) ease;
+}
+
+.toolbarLabel:hover:not(.selected) {
+    background-color: var(--hover-bg);
+    transform: scale(1.03); /* Slightly more scale for toolbar */
+    box-shadow: var(--shadow-sm);
+}

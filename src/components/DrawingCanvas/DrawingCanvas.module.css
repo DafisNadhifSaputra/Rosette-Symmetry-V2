@@ -1,0 +1,116 @@
+.canvasWrapper {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center container and instructions */
+}
+
+.canvasInstructions {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    text-align: center;
+    transition: color var(--transition-speed) ease;
+    margin-bottom: calc(var(--spacing) * 0.5); /* Increased spacing */
+    width: 100%; /* Take full width */
+}
+
+.canvasContainer {
+    position: relative;
+    border: 1px solid var(--canvas-border);
+    background-color: var(--canvas-bg-light); /* Default to light canvas background */
+    /* --- Use aspect-ratio for modern browsers --- */
+    aspect-ratio: 1 / 1;
+    width: 100%; /* Take full width of its parent (.leftColumn or .appContainer) */
+    max-width: var(--canvas-target-size); /* Respect max size */
+    /* --- Fallback for older browsers (padding trick) --- */
+    /* height: 0; */
+    /* padding-bottom: 100%; */
+    /* --- End Fallback --- */
+    box-shadow: var(--shadow-md);
+    overflow: hidden; /* Important for aspect-ratio and absolute children */
+    border-radius: var(--border-radius);
+    transition: border-color var(--transition-speed) ease,
+                box-shadow var(--transition-speed) ease, /* Ensure shadow transition */
+                background-color var(--transition-speed) ease;
+    margin-left: auto; /* Center if parent is wider */
+    margin-right: auto;
+    will-change: box-shadow; /* Optimize */
+}
+
+.canvasContainer:hover {
+    /* Slightly enhance shadow on hover */
+    box-shadow: var(--shadow-lg);
+    border-color: var(--secondary-color); /* Highlight border */
+}
+
+/* Apply dark mode background */
+body.dark-mode .canvasContainer {
+    background-color: var(--canvas-bg-dark);
+}
+
+
+.drawingCanvas,
+.gridCanvas {
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: transparent; /* Canvases themselves are transparent */
+}
+
+/* Drawing canvas is visually on bottom but drawn onto */
+.drawingCanvas {
+    z-index: 0;
+}
+
+/* Grid canvas is visually on top, non-interactive */
+.gridCanvas {
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* --- Cursor Styles --- */
+/* .cursorPencil is handled inline for dynamic URL */
+.cursorCrosshair { cursor: crosshair; }
+.cursorDefault { cursor: default; }
+
+/* Loading Overlay */
+.loadingOverlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(var(--card-bg-rgb, 255 255 255) / 0.7); /* Semi-transparent overlay */
+    color: var(--body-text);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    font-weight: 500;
+    z-index: 5; /* Above canvases */
+    border-radius: var(--border-radius); /* Match container */
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+    opacity: 0; /* Start hidden */
+    visibility: hidden; /* Start not visible */
+    transition: opacity var(--transition-speed) ease-in-out, visibility 0s var(--transition-speed); /* Add transition */
+    pointer-events: none; /* Prevent interaction when hidden */
+}
+
+/* Style to apply when loading is active */
+.loadingOverlay.isLoading {
+    opacity: 1;
+    visibility: visible;
+    transition: opacity var(--transition-speed) ease-in-out, visibility 0s 0s;
+    pointer-events: auto; /* Allow interaction if needed (though usually not) */
+}
+
+body.dark-mode .loadingOverlay {
+     background-color: rgba(var(--card-bg-rgb, 36 37 38) / 0.7);
+}
+/* Define RGB for card background if not already present */
+:root { --card-bg-rgb: 255, 255, 255; }
+body.dark-mode { --card-bg-rgb: 36, 37, 38; }

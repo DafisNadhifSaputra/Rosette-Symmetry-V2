@@ -1,0 +1,136 @@
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed;
+    z-index: 1000;
+    left: 0; top: 0; width: 100%; height: 100%;
+    overflow: hidden; /* Prevent scrolling on body when open */
+    background-color: rgba(0, 0, 0, 0.6);
+    padding: var(--spacing);
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
+    opacity: 0; /* Start hidden for animation */
+    transition: opacity var(--transition-speed) ease-out;
+    /* animation: fadeInBg var(--transition-speed) ease-out forwards; */
+}
+
+.modal.isOpen {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 1; /* Fade in */
+}
+
+.modalContent {
+    background-color: var(--card-bg);
+    margin: auto;
+    padding: calc(var(--spacing) * 1.8);
+    border: none;
+    border-radius: calc(var(--border-radius) * 1.1);
+    width: 90%;
+    max-width: 750px;
+    box-shadow: var(--shadow-lg);
+    position: relative;
+    transform: translateY(-25px) scale(0.98); /* Start slightly up and small */
+    opacity: 0;
+    transition: background-color var(--transition-speed) ease,
+                transform var(--transition-speed) ease-out,
+                opacity var(--transition-speed) ease-out;
+    max-height: 90vh;
+    overflow-y: auto;
+    color: var(--body-text); /* Ensure text color respects theme */
+}
+
+.modal.isOpen .modalContent {
+     transform: translateY(0) scale(1); /* Slide in */
+     opacity: 1;
+}
+
+
+.modalClose {
+    color: var(--secondary-color);
+    position: absolute;
+    top: calc(var(--spacing) * 0.8);
+    right: calc(var(--spacing) * 1.2);
+    font-size: 2.2rem;
+    font-weight: 300;
+    cursor: pointer;
+    line-height: 1;
+    transition: color var(--transition-speed-fast) ease, transform var(--transition-speed-fast) ease;
+    background: none;
+    border: none;
+    padding: 0.2rem 0.5rem;
+    border-radius: 50%; /* Make hit area slightly larger */
+    transition: color var(--transition-speed-fast) ease,
+                transform var(--transition-speed) cubic-bezier(0.25, 0.1, 0.25, 1.5); /* Add bounce */
+}
+
+.modalClose:hover,
+.modalClose:focus { /* Combine hover/focus */
+    color: var(--danger-hover); /* Use hover color */
+    text-decoration: none;
+    outline: none;
+    transform: scale(1.2) rotate(90deg); /* Slightly larger scale */
+}
+
+.modalClose:focus-visible { /* Explicit visible focus */
+    /* Use global focus style, adapted for danger color */
+    box-shadow: 0 0 0 2.5px rgba(var(--danger-color-rgb) / var(--focus-ring-opacity));
+    color: var(--danger-hover); /* Ensure color matches hover */
+}
+
+.modalContent h2 {
+    margin-top: 0.1rem;
+    color: var(--primary-color); /* Use primary color for heading */
+    font-weight: 600;
+    margin-bottom: calc(var(--spacing) * 1.2);
+    transition: color var(--transition-speed) ease;
+    font-size: 1.6rem;
+    letter-spacing: -0.2px;
+}
+
+.modalContent p,
+.modalContent ul {
+    font-size: 1rem;
+    line-height: 1.7;
+    transition: color var(--transition-speed) ease;
+}
+
+.modalContent p {
+    margin-bottom: calc(var(--spacing) * 1);
+}
+
+.modalContent ul {
+    padding-left: 30px; /* Standard indent */
+    margin-top: 0.8em;
+    margin-bottom: calc(var(--spacing) * 1);
+}
+
+.modalContent li {
+    margin-bottom: 0.8em;
+}
+
+.modalContent li::marker {
+    color: var(--primary-color);
+    font-size: 1.05em; /* Slightly larger marker */
+}
+
+/* --- Animations (Optional, covered by transition now) --- */
+/* @keyframes fadeInBg {
+    from { backdrop-filter: blur(0px); background-color: rgba(0, 0, 0, 0); }
+    to { backdrop-filter: blur(3px); background-color: rgba(0, 0, 0, 0.6); }
+}
+@keyframes modalSlideIn {
+    from { opacity: 0; transform: translateY(-25px) scale(0.98); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+} */
+
+/* Responsive Modal */
+@media (max-width: 768px) {
+    .modalContent { padding: calc(var(--spacing) * 1.5); margin-top: 10%; }
+    .modalContent h2 { font-size: 1.4rem; }
+}
+@media (max-width: 480px) {
+     .modalContent { width: 95%; margin-top: 8%; padding: calc(var(--spacing) * 1.2); }
+     .modalContent h2 { font-size: 1.3rem; }
+     .modalClose { font-size: 2rem; top: calc(var(--spacing) * 0.6); right: calc(var(--spacing) * 1); }
+}
